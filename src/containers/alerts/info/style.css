@@ -1,0 +1,51 @@
+.alert-info {
+    color: #146c8c;
+    background-color: #d0f1fa;
+    border-color: #bdecf7;
+}
+
+.alert-dismissible {
+    padding-right: 3.8125rem;
+}
+
+.alert {
+    position: relative;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+
+.fade {
+    transition: opacity 0.15s linear;
+}
+
+.alert-dismissible .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.75rem 1.25rem;
+    color: inherit;
+}
+
+button.close {
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+    appearance: none;
+}
+
+.close {
+    float: right;
+    font-size: 1.3125rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #13182c;
+    text-shadow: 0 1px 0 #ffffff;
+    opacity: .5;
+    text-shadow: none;
+}
+
+b, strong {
+    font-weight: 500;
+}
