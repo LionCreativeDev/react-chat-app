@@ -27,6 +27,8 @@ const facebook_login=()=>{
                 status: "login"
             }
 
+            localStorage.setItem("login", JSON.stringify(newuser));
+
             firebase.database().ref("/").child(`user/${user.uid}`).set(newuser).then(()=>{
                 //alert("user added in firebase database");
                 //console.log("user added in firebase database");
@@ -89,6 +91,8 @@ const google_login = () =>{
                 status: "login"
             }
 
+            localStorage.setItem("login", JSON.stringify(newuser));
+
             firebase.database().ref("/").child(`user/${user.uid}`).set(newuser).then(()=>{
                 //alert("user added in firebase database");
                 //console.log("user added in firebase database");
@@ -144,6 +148,8 @@ const create_user = (email, password) =>{
                 authprovide: "emailpassword",
                 status: "login"
             }
+
+            localStorage.setItem("login", JSON.stringify(newuser));
 
             firebase.database().ref("/").child(`user/${user.uid}`).set(newuser).then(()=>{
                 //alert("user added in firebase database");
@@ -204,6 +210,8 @@ const login_user = (email, password) =>{
             //console.log("User logged in successfully!");
             //console.log("user==>",user);
             
+            localStorage.setItem("login", JSON.stringify(newuser));
+
             firebase.database().ref("/").child(`user/${newuser.uid}`).update({'status': 'login'}).then(()=>{
                 dispatch({ type: "LOGIN", data:newuser });
 
@@ -282,6 +290,7 @@ const send_message = (chat_id, newmessage) =>{
 
 const sign_out = (data) =>{
     return (dispatch) =>{
+        localStorage.removeItem("login");
         firebase.auth().signOut().then(() => {
             firebase.database().ref("/").child(`user/${data[0].uid}`).update({'status': 'logout'}).then(()=>{
                 //console.log("User signout successfully!");

@@ -1,5 +1,6 @@
 const INITIAL_STATE = {
-    login: [],//for  production
+    //login: [],//for  production
+    login: (localStorage.getItem("login") !== null && JSON.parse(localStorage.getItem("login")).status === "login") ? [JSON.parse(localStorage.getItem("login"))] : [],
     //for testing
     // login: [{
     //     name: "threadswajahat",
