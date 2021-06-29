@@ -245,26 +245,37 @@ const get_users_friends = () =>{
         //for production
         
         //new
-        let fetched_friends = [];
-        firebase.database().ref('/').child('user').on("child_added", (response)=>{
-            fetched_friends.push(response.val());
-        })
-        if(fetched_friends.length > 0)
-            dispatch({ type: "FRIENDS", data:fetched_friends });
-        else
-            dispatch({ type: "FRIENDS", data:[] });
         // let fetched_friends = [];
-        // firebase.database().ref('/').child('user').once('value',function(data){
-        //     var datareturned = data.val();
-
-        //     for(var item in datareturned)
-        //     {
-        //         fetched_friends.push(datareturned[item]);
-        //         //console.log(datareturned[item].name);
-        //     }
+        // firebase.database().ref('/').child('user').on("child_added", (response)=>{
+        //     fetched_friends.push(response.val());
         // })
-        // dispatch({ type: "FRIENDS", data:fetched_friends });
+        // if(fetched_friends.length > 0)
+        //     dispatch({ type: "FRIENDS", data:fetched_friends });
+        // else
+        //     dispatch({ type: "FRIENDS", data:[] });
+        // // let fetched_friends = [];
+        // // firebase.database().ref('/').child('user').once('value',function(data){
+        // //     var datareturned = data.val();
 
+        // //     for(var item in datareturned)
+        // //     {
+        // //         fetched_friends.push(datareturned[item]);
+        // //         //console.log(datareturned[item].name);
+        // //     }
+        // // })
+        // // dispatch({ type: "FRIENDS", data:fetched_friends });
+        let fetched_friends = [];
+        firebase.database().ref('/').child('user').on("value", (response)=>{
+            var datareturned = response.val();
+            for(var item in datareturned)
+            {
+                fetched_friends.push(datareturned[item]);
+            }
+            if(fetched_friends.length > 0)
+                dispatch({ type: "FRIENDS", data:fetched_friends });
+            else
+                dispatch({ type: "FRIENDS", data:[] });
+        })
         //new
 
         //old
@@ -280,6 +291,24 @@ const get_users_friends = () =>{
     }
 }
 
+const get_message = (chat_id, chattingwith) =>{
+    return (dispatch) =>{
+        let this_user_chat = [];
+        firebase.database().ref('/').child(`chats/${chat_id}`).on("value", (response)=>{
+            var datareturned = response.val();
+            for(var item in datareturned)
+            {
+                this_user_chat.push(datareturned[item]);
+            }
+
+            if(this_user_chat.length > 0)
+                dispatch({ type: "FRIENDSCHAT", data:{chat: this_user_chat, chattingwith: chattingwith} });
+            else
+                dispatch({ type: "FRIENDSCHAT", data:{chat: [], chattingwith: chattingwith} });
+        })
+    }
+}
+
 const send_message = (chat_id, newmessage) =>{
     return (dispatch) =>{
         firebase.database().ref("/").child(`chats/${chat_id}`).push(newmessage).then(()=>{            
@@ -292,7 +321,7 @@ const sign_out = (data) =>{
     return (dispatch) =>{
         localStorage.removeItem("login");
         firebase.auth().signOut().then(() => {
-            firebase.database().ref("/").child(`user/${data[0].uid}`).update({'status': 'logout'}).then(()=>{
+            firebase.database().ref("/").child(`user/${data.uid}`).update({'status': 'logout'}).then(()=>{
                 //console.log("User signout successfully!");
                 dispatch({ type: "LOGOUT" });
             });
@@ -325,5 +354,6 @@ export {
     show_alert,
     remove_alert,
     get_users_friends,
+    get_message,
     send_message
 }

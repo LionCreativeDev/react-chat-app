@@ -12,13 +12,15 @@ const INITIAL_STATE = {
     // }],
     //for testing
     alerts: [],
-    friends: [] //for production
+    friends: [], //for production
     // //for testing
     // friends: [{authprovide: "google", email: "threads.ahsan@gmail.com", name: "Syed Ahsan", profile: "https://lh3.googleusercontent.com/a-/AOh14Gj89ZGl-klrigZXkWLW73aI_cg2rOCU35DS59Fs4A=s96-c", status: "logout", uid: "7H4aIJdaoVZO4wpltZv5Uay8cIi2"},
     // {authprovide: "facebook", email: "healthypartner23@gmail.com", name: "Healthypartner Petsnacks", profile: "https://graph.facebook.com/2767283250224463/picture", status: "logout", uid: "CGSuKWjOUNQDtYfCJvSRvqqVqno2"},
     // {authprovide: "emailpassword", email: "threads.bilal@gmail.com", name: "threads.bilal", status: "login", uid: "ho1d8gX5WrfEzfUifXLRaszPFRI3"},
     // {authprovide: "emailpassword", email: "threadswajahat@gmail.com", name: "threadswajahat", status: "login", uid: "skU3zTU3ujcmbvc9X6iYCTUwodc2"}]
     // //for testing
+    chattingwith: [],
+    chat: []
 }
 
 export default (state, action) => {
@@ -44,6 +46,12 @@ export default (state, action) => {
                 //friends: state.friends//for testing
                 //friends: [...state.friends, action.data] //old for production
                 friends: action.data //newfor production
+            });
+        case "FRIENDSCHAT":
+            return ({
+                ...state, 
+                chattingwith: action.data.chattingwith,
+                chat: action.data.chat
             });
         case "LOGIN":
             return ({

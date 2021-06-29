@@ -450,7 +450,8 @@
 }
 
 .friendprofileimage{
-	margin-left: 20px;
+	padding: 0;
+	margin-left: 0px;
 	z-index: 0 !important;
 }
 
@@ -522,4 +523,9 @@
     border-color: rgba(160, 175, 185, 0.15);
     border-bottom-color: transparent;
 	color: inherit;
+}
+
+.nav-link.active{
+	color: #ffffff !important;
+    background-color: #31c971;
 }

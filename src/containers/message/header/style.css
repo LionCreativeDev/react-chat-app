@@ -1,0 +1,9 @@
+.mini-logo {
+    animation: 20s linear 0s infinite normal none running App-logo-spin;
+    display: inline-block;
+    top: 0;
+    opacity: 1;
+    height: 50px;
+    width: 50px;
+    overflow: hidden;
+}
