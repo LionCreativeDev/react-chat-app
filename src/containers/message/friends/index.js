@@ -6,6 +6,16 @@ import {get_users_friends, get_message} from "../../../store/action";
 //import firebase from "../../../config/firebase";
 
 class Friends extends React.Component{
+    constructor()
+    {
+        super();
+        this.state ={
+            search: ''
+        }
+    }
+    handle_input = (e) => {
+        this.setState({search: e.target.value});
+    }
     chat = (v) => {
         let chat_id = this.chat_id(this.props.login.uid, v.uid);
         this.get_messages(chat_id, v);
@@ -27,7 +37,7 @@ class Friends extends React.Component{
             <React.Fragment>
                 <div className="navbar">
                     <div className="input-group flex bg-light rounded">
-                        <input type="text" className="form-control no-bg no-border no-shadow search" placeholder="Search" required /> 
+                        <input type="text" className="form-control no-bg no-border no-shadow search" placeholder="Search Friend" onChange={this.handle_input} value={this.state.search} /> 
                         <span className="input-group-append">
                         <button className="btn no-bg no-shadow" type="button">
                             <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-search text-fade">
@@ -39,25 +49,27 @@ class Friends extends React.Component{
                     </div>
                 </div>
 
-                {this.props.friends.length > 0 ? (
-                <div className="list list-row">
-                    {this.props.friends.map((v,i)=>{
-                        return (v.uid !== this.props.login.uid && ( <div className={v.uid === this.props.chattingwith.uid ? "list-item activechat" : "list-item" } onClick={()=>{ this.chat(v) }} key={i}>
-                                {/**<div><span className="w-40 avatar gd-primary"><img src="../assets/img/a1.jpg" alt="." /></span></div>**/}
-                                {(v.hasOwnProperty('profile') && v.profile !== null && v.profile !== "") ? <span className="avatar w-40 gd-primary friendprofileimage" style={{padding:0}}><img src={v.profile} alt={v.name+" profile"} /></span> : <span className="avatar w-40 gd-success friendprofileimage" style={{padding:0}}>{v.name[0].toUpperCase()}</span> }
-                                <div className="friendloginstatus"><span className={v.status === "login" ? "avatar-status on" : "avatar-status off"} /></div>
-                                <div className="flex" style={{padding:"0"}}>
-                                    <div className="item-author text-color">{v.name}</div>
-                                    {/**<div className="item-except text-muted text-sm h-1x">In WordPress Tutorial, we’ll streamline the process for you by pointing out the all key features of the WordPress</div>**/}
-                                </div>
-                                <div />
-                            </div>))
-                    })}
-                </div>) :
-                <div className="no-result">
-                    <div className="p-4 text-center">No Results</div>
+                <div className="scrollable hover" style={{height:'100%'}}>
+                    {this.props.friends.filter(o => Object.keys(o).some(k => o[k].toLowerCase().includes(this.state.search.toLowerCase()))).length > 0 ? (
+                    <div className="list list-row" style={{height:'100%'}}>
+                        {this.props.friends.filter(o => Object.keys(o).some(k => o[k].toLowerCase().includes(this.state.search.toLowerCase()))).map((v,i)=>{
+                            return (v.uid !== this.props.login.uid && ( <div className={v.uid === this.props.chattingwith.uid ? "list-item activechat" : "list-item" } onClick={()=>{ this.chat(v) }} key={i}>
+                                    {/**<div><span className="w-40 avatar gd-primary"><img src="../assets/img/a1.jpg" alt="." /></span></div>**/}
+                                    {(v.hasOwnProperty('profile') && v.profile !== null && v.profile !== "") ? <span className="avatar w-40 gd-primary friendprofileimage" style={{padding:0}}><img src={v.profile} alt={v.name+" profile"} /></span> : <span className="avatar w-40 gd-success friendprofileimage" style={{padding:0}}>{v.name[0].toUpperCase()}</span> }
+                                    <div className="friendloginstatus"><span className={v.status === "login" ? "avatar-status on" : "avatar-status off"} /></div>
+                                    <div className="flex" style={{padding:"0"}}>
+                                        <div className="item-author text-color">{v.name}</div>
+                                        {/**<div className="item-except text-muted text-sm h-1x">In WordPress Tutorial, we’ll streamline the process for you by pointing out the all key features of the WordPress</div>**/}
+                                    </div>
+                                    <div />
+                                </div>))
+                        })}
+                    </div>) :
+                    <div className="no-result" style={{position:'absolute', top: '50%', left:'25%'}}>
+                        <div className="p-4 text-center"><b>No Friend</b></div>
+                    </div>
+                    }
                 </div>
-                }
             </React.Fragment>
         )
     }

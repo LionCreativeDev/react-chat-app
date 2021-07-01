@@ -291,6 +291,41 @@ const get_users_friends = () =>{
     }
 }
 
+const search_friends = (query, uid) =>{
+    return (dispatch) =>{
+        let search_matched = [];
+        firebase.database().ref('/').child(`user`).orderByChild('name').startAt(query).endAt(`${query}\uf8ff`).limitToFirst(20).once('value', (response)=>{
+            var datareturned = response.val();
+            for(var item in datareturned)
+            {
+                if(datareturned[item].uid !== uid)
+                    search_matched.push(datareturned[item]);
+            }
+
+            if(search_matched.length > 0)
+                dispatch({ type: "SEARCHFRIENDS", data:search_matched });
+            else
+                dispatch({ type: "SEARCHFRIENDS", data:[] });
+        })
+    }
+}
+
+const invite_friend = (payload) =>{
+    return (dispatch) =>{
+        let invitation_sent = false;
+        firebase.database().ref("/").child(`invites`).push(payload).then(()=>{
+             //dispatch({ type: "ALERTS", data:alertmessage });
+            localStorage.setItem("invitation",JSON.stringify({type: "success", message: "Invitaion Send!" }));
+            invitation_sent = true;
+        }).catch(()=>{
+            if(!invitation_sent){
+                //dispatch({ type: "ALERTS", data:alertmessage });
+                localStorage.setItem("invitation",JSON.stringify({type: "fail", message: "Unable to send invitaion! Please try later" }));
+            }
+        });        
+    }
+}
+
 const get_message = (chat_id, chattingwith) =>{
     return (dispatch) =>{
         let this_user_chat = [];
@@ -354,6 +389,8 @@ export {
     show_alert,
     remove_alert,
     get_users_friends,
+    search_friends,
+    invite_friend,
     get_message,
     send_message
 }

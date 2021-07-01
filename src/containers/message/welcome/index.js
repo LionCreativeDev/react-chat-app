@@ -25,7 +25,7 @@ class Welcome extends React.Component{
                             </div>
                             <div className="text-muted status-message">status message goes here</div>
                             <div className="py-4">
-                                <a href="#" className="btn btn-sm btn-rounded btn-primary">Invite Friends</a>
+                                <button className="btn btn-sm btn-rounded btn-raised btn-wave btn-primary">Invite Friends</button>
                             </div>
                             {/**<small className="text-muted">End-product<strong>not</strong> for sale</small>**/}
                         </div>

@@ -10,6 +10,7 @@ import Header from '../message/header';
 import NavMini from '../message/nav-mini';
 import Friends from '../message/friends';
 import Contacts from '../message/contacts';
+import Invites from '../message/invites';
 import Welcome from '../message/welcome';
 import Chatbox from '../message/chatbox';
 import Emptychat from '../message/emptychat';
@@ -110,28 +111,26 @@ class Message extends React.Component{
                                     </div>
                                 </div>**/}
                                 <NavMini login={this.props.login[0]} />
-                                <div className="scrollable hover" style={{height:"100%"}}>
-                                    <ul className="nav nav-tabs">
-                                        <li className="nav-item" style={{width:'33%'}}>
-                                            <div className="nav-link active" id="friends-tab">Friends</div>
-                                        </li>
-                                        <li className="nav-item" style={{width:'33%'}}>
-                                            <div className="nav-link" id="search-tab">Search</div>
-                                        </li>
-                                        <li className="nav-item" style={{width:'33%'}}>
-                                            <div className="nav-link" id="invites-tab">Invites</div>
-                                        </li>
-                                    </ul>
-                                    <div className="tab-content mb-4" style={{height:"100%"}}>
-                                        <div className="tab-pane fade show active" id="friends" style={{height:"100%"}}>
-                                            <Friends login={this.props.login[0]} chattingwith={this.props.chattingwith} />
-                                        </div>
-                                        <div className="tab-pane fade" id="search" style={{height:"100%"}}>
-                                            <Contacts login={this.props.login[0]} chattingwith={this.props.chattingwith} />
-                                        </div>
-                                        <div className="tab-pane fade" id="invites" style={{height:"100%"}}>
-                                        <p>lorem ipsum dollar sit aamit 11111</p>
-                                        </div>
+                                <ul className="nav nav-tabs">
+                                    <li className="nav-item" style={{width:'33%'}}>
+                                        <div className="nav-link active" id="friends-tab">Friends</div>
+                                    </li>
+                                    <li className="nav-item" style={{width:'33%'}}>
+                                        <div className="nav-link" id="search-tab">Search</div>
+                                    </li>
+                                    <li className="nav-item" style={{width:'33%'}}>
+                                        <div className="nav-link" id="invites-tab">Invites</div>
+                                    </li>
+                                </ul>                                                                    
+                                <div className="tab-content mb-4" style={{height:'100%'}}>
+                                    <div className="tab-pane fade show active" id="friends" style={{height:'100%'}}>
+                                        <Friends login={this.props.login[0]} chattingwith={this.props.chattingwith} />
+                                    </div>
+                                    <div className="tab-pane fade" id="search" style={{height:'100%'}}>
+                                        <Contacts login={this.props.login[0]} chattingwith={this.props.chattingwith} />
+                                    </div>
+                                    <div className="tab-pane fade" id="invites" style={{height:'100%'}}>
+                                        <Invites />
                                     </div>
                                 </div>
                             </div>

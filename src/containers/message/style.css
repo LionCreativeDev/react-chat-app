@@ -529,3 +529,26 @@
 	color: #ffffff !important;
     background-color: #31c971;
 }
+
+.btn-raised:not([disabled]):active, .btn-raised:not([disabled]):focus, .btn-raised:not([disabled]):hover {
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 40%);
+    transform: translate3d(0,-1px,0);
+}
+
+.btn:active, .btn:hover {
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%);
+}
+.btn:hover {
+    color: #fff;
+    text-decoration: none;
+}
+[type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {
+    cursor: pointer;
+}
+.blue {
+    background-color: #2196f3;
+    color: #fff;
+}
+.w-xs {
+    width: 90px;
+}
