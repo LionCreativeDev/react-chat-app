@@ -1,6 +1,18 @@
 import React from 'react';
 
 class Chatbox extends React.Component{
+    formated_date(timestamp){
+        const messageTimestamp = new Date(timestamp);
+        var today = new Date();
+
+        if(messageTimestamp.toDateString() > today.toDateString()){
+            let formateddatestring = messageTimestamp.toDateString() + " " +messageTimestamp.toLocaleTimeString("en-US").replace(/(.*)\D\d+/, '$1');
+            return formateddatestring;
+        }
+        else{
+            return messageTimestamp.toLocaleTimeString("en-US").replace(/(.*)\D\d+/, '$1');
+        }
+    }
     render(){
         return(
             <div className="scrollable hover">
@@ -18,7 +30,7 @@ class Chatbox extends React.Component{
                                     )}
                                     <div className="chat-body">
                                         <div className="chat-content rounded msg bg-body">{v.message}</div>                                                    
-                                        <div className="chat-date date">2 days ago</div>
+                                        <div className="chat-date date">{this.formated_date(v.timestamp)}</div>
                                     </div>
                                 </div>
                                 )

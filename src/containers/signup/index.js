@@ -19,10 +19,20 @@ class Signup extends React.Component{
         }
     }
     handle_email = (e) => {
-        this.setState({email: e.target.value});
+        if (e.keyCode === 13)
+        {
+            const passwordField = document.querySelector(`input[name=password]`);
+            passwordField.focus();
+        }
+        else{
+            this.setState({email: e.target.value});
+        }
     }
     handle_password = (e) => {
-        this.setState({password: e.target.value});
+        if (e.keyCode === 13) 
+            this.handle_loginwithemailandpassword();
+        else
+            this.setState({password: e.target.value});
     }
     vaidate_email = (input) => {
         var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
@@ -44,14 +54,22 @@ class Signup extends React.Component{
             }
             else
             {
-                if(email === '' && password === '')
+                if(email === '' && password === ''){
+                    document.querySelector(`input[name=email]`).focus();
                     this.props.show_alert("fail","Please provide email and password to create account");//this.setState({ alertmessage: {type: "fail", message: "Please provide email and password to create account"} });
-                else if (email === '')
+                }
+                else if (email === ''){
+                    document.querySelector(`input[name=email]`).focus();
                     this.props.show_alert("fail","Please provide email to create account");//this.setState({ alertmessage: {type: "fail", message: "Please provide email to create account"} });
-                else if (password === '')
+                }
+                else if (password === ''){
+                    document.querySelector(`input[name=password]`).focus();
                     this.props.show_alert("fail","Please provide password to create account");//this.setState({ alertmessage: {type: "fail", message: "Please provide password to create account"} });
-                else if(!this.vaidate_email(email))
+                }
+                else if(!this.vaidate_email(email)){
+                    document.querySelector(`input[name=email]`).focus();
                     this.props.show_alert("fail","Please provide valid email create account");//this.setState({ alertmessage: {type: "fail", message: "Please provide valid email create account"} });
+                }
             }
         }
     }
@@ -99,9 +117,9 @@ class Signup extends React.Component{
                             <h5>Welcome</h5>
                             <p><small className="text-muted">Sign up to manage enjoy</small></p>
                             
-                                <div className="form-group"><label>Email</label><input type="email" className="form-control" placeholder="Enter email" name="email" onChange={this.handle_email} value={this.state.email}/></div>
+                                <div className="form-group"><label>Email</label><input type="email" className="form-control" placeholder="Enter email" name="email" onKeyDown={this.handle_password} onChange={this.handle_email} value={this.state.email}/></div>
                                 <div className="form-group">
-                                    <label>Password</label><input type="password" className="form-control" placeholder="Password" name="password" onChange={this.handle_password} value={this.state.password}/>
+                                    <label>Password</label><input type="password" className="form-control" placeholder="Password" name="password" onKeyDown={this.handle_password} onChange={this.handle_password} value={this.state.password}/>
                                     {/**<div className="my-3 text-right"><a href="forgot-password.html" className="text-muted" data-pjax-state>Forgot password?</a></div>**/}
                                 </div>
                                 {/**<div className="checkbox mb-3"><label className="ui-check"><input type="checkbox" /><i /> Remember me</label></div>**/}

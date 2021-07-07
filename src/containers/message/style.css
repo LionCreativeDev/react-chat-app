@@ -552,3 +552,18 @@
 .w-xs {
     width: 90px;
 }
+
+.btnmenu, .btnmenu:hover {
+	background-color: #fff;
+    color: #000;
+}
+
+.green, .green:hover {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.red, .red:hover {
+    background-color: #f44336;
+    color: #fff;
+}

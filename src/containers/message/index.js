@@ -36,7 +36,9 @@ class Message extends React.Component{
         }
     }    
     componentDidMount() {
-        this.props.get_users_friends();
+        if(this.props.login.length > 0)
+            this.props.get_users_friends(this.props.login[0].uid);
+            
         $(".dropdown").on("click",function(e){
             if(!$(this).hasClass("show")){
                 $(this).addClass("show");
@@ -130,7 +132,7 @@ class Message extends React.Component{
                                         <Contacts login={this.props.login[0]} chattingwith={this.props.chattingwith} />
                                     </div>
                                     <div className="tab-pane fade" id="invites" style={{height:'100%'}}>
-                                        <Invites />
+                                        <Invites login={this.props.login[0]} />
                                     </div>
                                 </div>
                             </div>
@@ -138,7 +140,7 @@ class Message extends React.Component{
                         <div className="d-flex flex pr-md-3" id="content-body">
                         <div className="d-flex flex-column flex card m-0 mb-md-3" id="chat-list">
                             <div className="navbar flex-nowrap b-b">
-                                <button data-toggle="modal" data-target="#content-aside" data-modal className="d-md-none btn btn-sm btn-icon no-bg">
+                                <button data-toggle="modal" data-target="#content-aside" data-modal className="d-md-none btn btn-sm btn-icon no-bg btnmenu">
                                     <span>
                                     <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-menu">
                                         <line x1={3} y1={12} x2={21} y2={12} />
@@ -193,7 +195,7 @@ const mapStateToProp = (state) => ({
     chat: state.chat
 })
 const mapDispatchToProp = (dispatch) => ({
-    get_users_friends: ()=> dispatch(get_users_friends())
+    get_users_friends: (uid)=> dispatch(get_users_friends(uid))
 })
 
 //export default Message;

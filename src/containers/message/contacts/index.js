@@ -2,7 +2,7 @@ import React from 'react';
 
 //import firebase from "../../../config/firebase";
 import {connect} from "react-redux";
-import {search_friends, invite_friend} from "../../../store/action";
+import {get_invitation, search_friends, invite_friend} from "../../../store/action";
 
 import searched_contact_image from '../../../assets/searched_contact_image.png';
 import AlertHelper from '../../alerts/alerthelper';
@@ -19,6 +19,16 @@ class Contacts extends React.Component{
                 message: ''
             }
         }
+    }
+    alreadyInvited(uid) {
+        // if (this.props.sent_invitation.filter(item=> item.uid == uid).length == 0)
+        //     return false;
+        // else
+        //     return true;
+        
+        return this.props.sent_invitation.some(function(el) {
+          return (el.uid === uid) ? true : false;
+        }); 
     }
     handle_input = (e) => {
         let query = e.target.value;
@@ -44,6 +54,10 @@ class Contacts extends React.Component{
         //     this.setState({ searched_contact: [] });
         // }
         this.props.search_friends(query, this.props.login.uid);
+    }
+    componentDidMount()
+    {
+        this.props.get_invitation(this.props.login.uid);
     }
     // componentDidMount()
     // {
@@ -81,7 +95,7 @@ class Contacts extends React.Component{
                 setTimeout(()=>{
                     localStorage.removeItem('invitation');
                     thiscontext.setState({ alerts: {type: '', message: ''} });
-                }, 5000);
+                }, 3000);
             }
         }
     }
@@ -123,8 +137,11 @@ class Contacts extends React.Component{
                                 <div className="flex" style={{padding:"0"}}>
                                     <div className="item-author text-color">{v.name}</div>
                                 </div>
+                                { !this.alreadyInvited(v.uid) ?
                                 <div style={{left:'0', padding:'0'}}><button className="btn btn-raised btn-wave w-xs blue text-white" onClick={()=>{ this.props.invite_friend({sender:this.props.login.uid, receiver: v.uid}) }}>Invite</button></div>
-
+                                :
+                                <div style={{left:'0', padding:'0'}}><button className="btn w-xs green text-white">Invited</button></div>
+                                }
                             </div>)
                     })}
                 </div>) :
@@ -139,9 +156,11 @@ class Contacts extends React.Component{
 }
 
 const mapStateToProp = (state) => ({
-    searched_contact: state.searched_contact
+    searched_contact: state.searched_contact,
+    sent_invitation: state.sent_invitation
 })
 const mapDispatchToProp = (dispatch) => ({
+    get_invitation: (uid)=> dispatch(get_invitation(uid)),
     search_friends: (query, uid)=> dispatch(search_friends(query, uid)),
     invite_friend: (payload)=> dispatch(invite_friend(payload))
 })

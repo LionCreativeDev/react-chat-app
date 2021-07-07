@@ -2,6 +2,7 @@ import React from 'react';
 
 import {connect} from "react-redux";
 import {get_users_friends, get_message} from "../../../store/action";
+import friend_image from '../../../assets/friend.png';
 
 //import firebase from "../../../config/firebase";
 
@@ -29,9 +30,9 @@ class Friends extends React.Component{
     get_messages = (chat_id, chatting_with) => {
         this.props.get_message(chat_id, chatting_with);
     }
-    componentDidMount() {
-        this.props.get_users_friends();
-    }
+    // componentDidMount() {
+    //     this.props.get_users_friends(this.props.login.uid);
+    // }
     render(){
         return(
             <React.Fragment>
@@ -50,9 +51,9 @@ class Friends extends React.Component{
                 </div>
 
                 <div className="scrollable hover" style={{height:'100%'}}>
-                    {this.props.friends.filter(o => Object.keys(o).some(k => o[k].toLowerCase().includes(this.state.search.toLowerCase()))).length > 0 ? (
+                    {this.props.friends.filter(o => Object.keys(o).some(k => o[k].includes(this.state.search.toLowerCase()))).length > 0 ? (
                     <div className="list list-row" style={{height:'100%'}}>
-                        {this.props.friends.filter(o => Object.keys(o).some(k => o[k].toLowerCase().includes(this.state.search.toLowerCase()))).map((v,i)=>{
+                        {this.props.friends.filter(o => Object.keys(o).some(k => o[k].includes(this.state.search.toLowerCase()))).map((v,i)=>{
                             return (v.uid !== this.props.login.uid && ( <div className={v.uid === this.props.chattingwith.uid ? "list-item activechat" : "list-item" } onClick={()=>{ this.chat(v) }} key={i}>
                                     {/**<div><span className="w-40 avatar gd-primary"><img src="../assets/img/a1.jpg" alt="." /></span></div>**/}
                                     {(v.hasOwnProperty('profile') && v.profile !== null && v.profile !== "") ? <span className="avatar w-40 gd-primary friendprofileimage" style={{padding:0}}><img src={v.profile} alt={v.name+" profile"} /></span> : <span className="avatar w-40 gd-success friendprofileimage" style={{padding:0}}>{v.name[0].toUpperCase()}</span> }
@@ -65,9 +66,15 @@ class Friends extends React.Component{
                                 </div>))
                         })}
                     </div>) :
-                    <div className="no-result" style={{position:'absolute', top: '50%', left:'25%'}}>
+                    <React.Fragment>
+                    <div className="no-result" style={{display:'none', position:'absolute', top: '50%', left:'25%'}}>
                         <div className="p-4 text-center"><b>No Friend</b></div>
                     </div>
+                    <div className="no-result" style={{position:'absolute', top: '50%', left:'25%'}}>
+                        <img src={friend_image} style={{width: '100px', marginLeft:'5px'}} alt=""/>
+                        <div className="p-4 text-center"><b>No Friend</b></div>
+                    </div>
+                    </React.Fragment>
                     }
                 </div>
             </React.Fragment>
@@ -81,7 +88,7 @@ const mapStateToProp = (state) => ({
     chat: state.chat
 })
 const mapDispatchToProp = (dispatch) => ({
-    get_users_friends: ()=> dispatch(get_users_friends()),
+    get_users_friends: (uid)=> dispatch(get_users_friends(uid)),
     get_message: (chat_id, chattingwith)=> dispatch(get_message(chat_id, chattingwith))
 })
 

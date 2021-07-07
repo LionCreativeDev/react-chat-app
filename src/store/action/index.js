@@ -233,14 +233,14 @@ const login_user = (email, password) =>{
 
             let alertmessage = {
                 type: 'fail',
-                message: 'Sorry! Unable to login in user.'
+                message: 'Sorry! Unable to login user.'
             }
             dispatch({ type: "ALERTS", data:alertmessage });
         });
     }
 }
 
-const get_users_friends = () =>{
+const get_users_friends = (uid) =>{
     return (dispatch) =>{
         //for production
         
@@ -264,18 +264,38 @@ const get_users_friends = () =>{
         // //     }
         // // })
         // // dispatch({ type: "FRIENDS", data:fetched_friends });
-        let fetched_friends = [];
-        firebase.database().ref('/').child('user').on("value", (response)=>{
-            var datareturned = response.val();
-            for(var item in datareturned)
-            {
-                fetched_friends.push(datareturned[item]);
-            }
-            if(fetched_friends.length > 0)
-                dispatch({ type: "FRIENDS", data:fetched_friends });
-            else
-                dispatch({ type: "FRIENDS", data:[] });
-        })
+
+
+        // let fetched_friends = [];
+        // firebase.database().ref('/').child('user').on("value", (response)=>{
+        //     var datareturned = response.val();
+        //     for(var item in datareturned)
+        //     {
+        //         fetched_friends.push(datareturned[item]);
+        //     }
+        //     if(fetched_friends.length > 0)
+        //         dispatch({ type: "FRIENDS", data:fetched_friends });
+        //     else
+        //         dispatch({ type: "FRIENDS", data:[] });
+        // })
+
+        firebase.database().ref('/').child("user/" + uid + "/friend").on('value', (snapshot) => {
+            var fetched_friends = [];
+            snapshot.forEach(friend => {
+                var friendid= friend.val();
+                //console.log(friendid);
+                firebase.database().ref('/').child("user/" + friendid).once('value').then((details) => {
+                    //console.log(details.val());
+                    fetched_friends = [...fetched_friends, details.val()];
+                    //console.log("fetched_friends===>",fetched_friends);
+                    //console.log("fetched_friends===>",fetched_friends.length);
+                    // if(fetched_friends.lenght > 0)
+                    //     console.log("fetched_friends.lenght==>", fetched_friends.lenght);
+                    dispatch({ type: "FRIENDS", data:fetched_friends });
+                });
+            })
+        });
+        
         //new
 
         //old
@@ -322,14 +342,118 @@ const invite_friend = (payload) =>{
                 //dispatch({ type: "ALERTS", data:alertmessage });
                 localStorage.setItem("invitation",JSON.stringify({type: "fail", message: "Unable to send invitaion! Please try later" }));
             }
-        });        
+        });
+    }
+}
+
+const get_invitation = (uid)=>{
+    return (dispatch) => {
+        firebase.database().ref('/').child(`invites`).orderByChild('receiver').equalTo(uid).on("value", (response)=>{
+            if(response.val() != null){
+                let received_invitation = [];
+                let datareturned = response.val();
+                for(let item in datareturned)
+                {
+                    firebase.database().ref("/").child(`user/${datareturned[item]["sender"]}`).once("value", (userdetails)=>{
+                        let details = userdetails.val();
+                        received_invitation.push({
+                            name: details.name,
+                            email: details.email,
+                            profile: details.profile,
+                            uid: details.uid,
+                            authprovide: details.authprovide,
+                            status: details.status,
+                            invitation_key: item
+                        });
+
+                        if(received_invitation.length > 0)
+                            dispatch({ type: "RECEIVEDINVITATION", data: received_invitation });
+                        // else
+                        //     dispatch({ type: "RECEIVEDINVITATION", data: [] });
+                    })
+                }
+            }
+            else
+            {
+                dispatch({ type: "RECEIVEDINVITATION", data: [] });
+            }
+
+            // if(received_invitation.length > 0)
+            //     dispatch({ type: "RECEIVEDINVITATION", data: received_invitation });//localStorage.setItem("received_invitation", JSON.stringify(received_invitation));
+            // else
+            //     dispatch({ type: "RECEIVEDINVITATION", data: [] });//localStorage.removeItem("received_invitation");
+        })
+        
+        firebase.database().ref('/').child(`invites`).orderByChild('sender').equalTo(uid).on("value", (response)=>{            
+            if(response.val() != null){
+                let sent_invitation = [];
+                let datareturned = response.val();
+                for(let item in datareturned)
+                {
+                    firebase.database().ref("/").child(`user/${datareturned[item]["receiver"]}`).once("value", (userdetails)=>{
+                        //sent_invitation.push(userdetails.val());
+                        let details = userdetails.val();
+                        sent_invitation.push({
+                            name: details.name,
+                            email: details.email,
+                            profile: details.profile,
+                            uid: details.uid,
+                            authprovide: details.authprovide,
+                            status: details.status,
+                            invitation_key: item
+                        });
+
+                        if(sent_invitation.length > 0)
+                            dispatch({ type: "SENTINVITATION", data: sent_invitation });
+                        // else
+                        //     dispatch({ type: "SENTINVITATION", data: [] });
+                    })
+                }
+            }
+            else
+            {
+                dispatch({ type: "SENTINVITATION", data: [] });
+            }
+
+            // if(sent_invitation.length > 0)
+            //     dispatch({ type: "SENTINVITATION", data: sent_invitation });//localStorage.setItem("sent_invitation", JSON.stringify(sent_invitation));
+            // else
+            //     dispatch({ type: "SENTINVITATION", data: [] });//localStorage.removeItem("sent_invitation");
+        })
+    }
+}
+
+const accept_invitation = (inviter, invited, invitation_key) => {
+    return (dispatch) => {
+        //let inviter = "ho1d8gX5WrfEzfUifXLRaszPFRI3"; //who sent an invitation (ie, bilal)
+        //let invited = "2PBwu7AkSIhaBIQ60m8zq9DyV9b2"; //who received an invitation (ie, wajahat)
+
+        firebase.database().ref("/").child(`user/${inviter}/friend`).set([invited]).then(()=>{
+            firebase.database().ref("/").child(`user/${invited}/friend`).set([inviter]).then(()=>{
+                console.log("friend added");
+                firebase.database().ref('/').child('invites/'+invitation_key).remove();
+                //get_users_friends(invited);
+            }).catch(()=>{
+                console.log("unable to acccept invite");
+            });
+        }).catch(()=>{
+            console.log("unable to acccept invite");
+        });
+    }
+}
+
+const reject_invitation = (invitation_key) => {
+    return (dispatch) => {
+        firebase.database().ref('/').child('invites/'+invitation_key).remove();
+        //console.log(`invitation_key: ${invitation_key} removed`);
     }
 }
 
 const get_message = (chat_id, chattingwith) =>{
     return (dispatch) =>{
-        let this_user_chat = [];
+        
         firebase.database().ref('/').child(`chats/${chat_id}`).on("value", (response)=>{
+            let this_user_chat = [];
             var datareturned = response.val();
             for(var item in datareturned)
             {
@@ -354,14 +478,25 @@ const send_message = (chat_id, newmessage) =>{
 
 const sign_out = (data) =>{
     return (dispatch) =>{
-        localStorage.removeItem("login");
-        firebase.auth().signOut().then(() => {
-            firebase.database().ref("/").child(`user/${data.uid}`).update({'status': 'logout'}).then(()=>{
-                //console.log("User signout successfully!");
-                dispatch({ type: "LOGOUT" });
+        // localStorage.removeItem("login");
+        // firebase.auth().signOut().then(() => {
+        //     firebase.database().ref("/").child(`user/${data.uid}`).update({'status': 'logout'}).then(()=>{
+        //         //console.log("User signout successfully!");
+        //         dispatch({ type: "LOGOUT" });
+        //     });
+        // }).catch((error) => {
+        //     console.log("Sorry! Unable to signout.");
+        // });
+
+        
+        firebase.database().ref("/").child(`user/${data.uid}`).update({'status': 'logout'}).then(()=>{
+            firebase.auth().signOut().then(() => {
+                localStorage.removeItem("login");
+            }).catch((error) => {
+                console.log("Sorry! Unable to signout.");
             });
-        }).catch((error) => {
-            console.log("Sorry! Unable to signout.");
+            //console.log("User signout successfully!");
+            dispatch({ type: "LOGOUT" });
         });
     }
 }
@@ -391,6 +526,9 @@ export {
     get_users_friends,
     search_friends,
     invite_friend,
+    get_invitation,
+    accept_invitation,
+    reject_invitation,
     get_message,
     send_message
 }

@@ -21,6 +21,8 @@ const INITIAL_STATE = {
     // //for testing
     chattingwith: [],
     searched_contact: [],
+    sent_invitation: [],
+    received_invitation: [],
     chat: []
 }
 
@@ -58,6 +60,16 @@ export default (state, action) => {
                 ...state, 
                 chattingwith: action.data.chattingwith,
                 chat: action.data.chat
+            });
+        case "SENTINVITATION":
+            return ({
+                ...state, 
+                sent_invitation: action.data
+            });
+        case "RECEIVEDINVITATION":
+            return ({
+                ...state, 
+                received_invitation: action.data
             });
         case "LOGIN":
             return ({
