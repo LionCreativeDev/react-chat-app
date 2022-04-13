@@ -501,10 +501,10 @@
 	font-size: 6vh;
 }
 
-.status-message{
+/* .status-message{
 	margin-bottom: 15px;
 	margin-top: -15px;
-}
+} */
 
 .b-b {
     border-bottom: 1px solid rgba(160, 175, 185, 0.15);
@@ -566,4 +566,49 @@
 .red, .red:hover {
     background-color: #f44336;
     color: #fff;
+}
+
+.status-box{
+	border-color: rgba(135,150,165,.15);
+    border-width: 1px;
+    border-radius: .25rem;
+    color: inherit;
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 350px;
+}
+.status-box-holder{
+	margin: 0px auto;max-width: 350px;display: flow-root;
+}
+.status-box .input-group{
+	border: 1px solid;
+	border-color: #448bff;
+	box-shadow: 0 0 0 0.2rem rgb(68 139 255 / 25%);
+    border-width: 1px;
+    border-radius: 25px;
+    color: #5e676f;
+}
+/* .status-box .input-group:active{
+	border-color: #448bff;
+	box-shadow: 0 0 0 0.2rem rgb(68 139 255 / 25%);
+} */
+
+.status-box .p-3{
+	border: 0px;
+	border-radius: 25px;
+
+	position: relative;
+    flex: 1 1 auto;
+    margin-bottom: 0;
+	display: block;
+    /* width: 100%; */
+    height: calc(1.4285714286em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: .875rem;
+    font-weight: 400;
+    line-height: 1.4285714286;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }

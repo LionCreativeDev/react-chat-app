@@ -22,12 +22,21 @@ const facebook_login=()=>{
                 name: user.displayName,
                 email: user.email,
                 profile: user.photoURL,
+                status_message: '',
                 uid: user.uid,
                 authprovide: "facebook",
                 status: "login"
             }
 
             localStorage.setItem("login", JSON.stringify(newuser));
+
+            firebase.database().ref('/').child(`user/${newuser.uid}`).once("value", (response)=>{
+                //console.log(response.val());
+                var userdetails = response.val();
+
+                if(userdetails != null && userdetails.status_message.trim() != "")
+                    newuser.status_message = userdetails.status_message.trim();
+            })
 
             firebase.database().ref("/").child(`user/${user.uid}`).set(newuser).then(()=>{
                 //alert("user added in firebase database");
@@ -86,12 +95,21 @@ const google_login = () =>{
                 name: user.displayName,
                 email: user.email,
                 profile: user.photoURL,
+                status_message: '',
                 uid: user.uid,
                 authprovide: "google",
                 status: "login"
             }
 
             localStorage.setItem("login", JSON.stringify(newuser));
+
+            firebase.database().ref('/').child(`user/${newuser.uid}`).once("value", (response)=>{
+                //console.log(response.val());
+                var userdetails = response.val();
+
+                if(userdetails != null && userdetails.status_message.trim() != "")
+                    newuser.status_message = userdetails.status_message.trim();
+            })
 
             firebase.database().ref("/").child(`user/${user.uid}`).set(newuser).then(()=>{
                 //alert("user added in firebase database");
@@ -144,6 +162,7 @@ const create_user = (email, password) =>{
                 name: user.email.substring(0, email.lastIndexOf("@")),
                 email: user.email,
                 profile: user.photoURL,
+                status_message: '',
                 uid: user.uid,
                 authprovide: "emailpassword",
                 status: "login"
@@ -202,6 +221,7 @@ const login_user = (email, password) =>{
                 name: user.displayName !== null ? user.displayName : user.email.substring(0, email.lastIndexOf("@")),
                 email: user.email,
                 profile: user.photoURL,
+                status_message: '',
                 uid: user.uid,
                 authprovide: "emailpassword",
                 status: "login"
@@ -209,6 +229,13 @@ const login_user = (email, password) =>{
 
             //console.log("User logged in successfully!");
             //console.log("user==>",user);
+            firebase.database().ref('/').child(`user/${newuser.uid}`).once("value", (response)=>{
+                //console.log(response.val());
+                var userdetails = response.val();
+
+                if(userdetails != null && userdetails.status_message.trim() != "")
+                    newuser.status_message = userdetails.status_message.trim();
+            })
             
             localStorage.setItem("login", JSON.stringify(newuser));
 
@@ -237,6 +264,30 @@ const login_user = (email, password) =>{
             }
             dispatch({ type: "ALERTS", data:alertmessage });
         });
+    }
+}
+
+const get_status_message = () => {
+    return (dispatch) =>{
+        
+    }
+}
+
+const set_status_message = (uid, status_message) => {
+    return (dispatch) =>{
+        firebase.database().ref("/").child(`user/${uid}`).update({'status_message': status_message}).then(()=>{
+            let alertmessage = {
+                type: 'success',
+                message: 'Status message updated successfully!'
+            }
+            //dispatch({ type: "ALERTS", data:alertmessage });
+            
+        });
+
+        const user = JSON.parse(localStorage.getItem("login"));
+        user.status_message = status_message;
+        localStorage.setItem("login", JSON.stringify(user));
+        dispatch({ type: "UPDATESTATUSMESSAGE", data:status_message });
     }
 }
 
@@ -530,5 +581,6 @@ export {
     accept_invitation,
     reject_invitation,
     get_message,
-    send_message
+    send_message,
+    set_status_message
 }

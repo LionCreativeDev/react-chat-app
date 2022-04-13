@@ -71,6 +71,14 @@ export default (state, action) => {
                 ...state, 
                 received_invitation: action.data
             });
+        case "UPDATESTATUSMESSAGE":
+            let updatedlogin = state.login;
+            updatedlogin[0].status_message = action.data;
+            //console.log("updatedlogin===>",updatedlogin);
+            return ({
+                ...state, 
+                login: updatedlogin
+            });
         case "LOGIN":
             return ({
                 ...state, 

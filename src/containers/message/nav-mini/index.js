@@ -19,7 +19,7 @@ class NavMini extends React.Component{
                             <div className="d-flex">
                                 <div className="mr-auto text-nowrap">
                                     {this.props.login.name}
-                                    <small className="d-block text-muted">status message goes here</small>
+                                    <small className="d-block text-muted">{this.props.login.status_message != "" ? this.props.login.status_message : "You can provide your status message here!"}</small>
                                 </div>
                             </div>
                         </div>
@@ -39,7 +39,7 @@ class NavMini extends React.Component{
                             </div>
                             <div style={{paddingLeft:".5rem"}}>
                                 <h5 className="mt-2">{this.props.login.name}</h5>
-                                <div className="text-fade text-sm"><span className="m-r">status message goes here</span>
+                                <div className="text-fade text-sm"><span className="m-r">{this.props.login.status_message != "" ? this.props.login.status_message : "You can provide your status message here!"}</span>
                                 {/**<small><i className="fa fa-map-marker mr-2" />London, UK</small>**/}
                                 </div>
                             </div>
